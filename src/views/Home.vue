@@ -1,29 +1,51 @@
 <template>
   <div class="home">
 
+    <div class="" v-if="user.properties">
+      Showing skills of {{user.properties.name_kanji}}
+    </div>
+
     <div class="skills_wrapper">
-      <div class="" v-for="skill in skills" v-bind:key="skill.skill.identity.low">
-        <div class="">
-          Skill: {{skill.skill.properties.name}}
+
+      <div
+        class="skill"
+        v-for="skill in ordered_skills"
+        v-bind:key="skill.skill.identity.low">
+
+        <div class="skill_name">
+          {{skill.skill.properties.name}}
         </div>
 
-        <div class="">
-          Profeciency: {{skill.relationship.properties.profeciency}}
-        </div>
+        <meter
+          v-bind:value="skill.relationship.properties.profeciency"
+          min="0"
+          max="100"/>
 
-        <div class="">
-          <button type="button" v-on:click="delete_relationship_to_skill(skill.skill)">bye</button>
-        </div>
+
+        <button type="button" v-on:click="delete_relationship_to_skill(skill.skill)">bye</button>
 
       </div>
 
     </div>
 
-    <form class="" v-on:submit.prevent="create_skill()">
-      <input type="search" list="skills" v-model="new_skill.properties.name" placeholder="skill">
+    <form class="new_skill_form" v-on:submit.prevent="create_skill()">
+      <input
+        class="new_skill_input"
+        type="search"
+        list="skills"
+        v-model="new_skill.properties.name"
+        placeholder="skill">
+
+      <input
+        type="range"
+        class="profeciency_range"
+        v-model="new_skill_relationship.properties.profeciency">
+
       <!-- make this a number maybe -->
-      <input type="text" v-model="new_skill_relationship.properties.profeciency" placeholder="profeciency">
-      <input type="submit" name="">
+
+      <input
+        class="create_button"
+        type="submit">
 
       <datalist id="skills">
         <option
@@ -32,10 +54,6 @@
           v-bind:key="skill.properties.name"/>
       </datalist>
 
-      <div
-        v-for="skill in all_skills"
-        v-html="skill.properties.name"
-        v-bind:key="skill.identity.low"/>
     </form>
   </div>
 </template>
@@ -52,6 +70,8 @@ export default {
   data(){
     return {
 
+      user: {},
+
       all_skills: [],
 
       skills: [],
@@ -63,12 +83,13 @@ export default {
       },
       new_skill_relationship: {
         properties: {
-          profeciency: ''
+          profeciency: 0
         }
       }
     }
   },
   mounted(){
+    this.get_employee_information()
     this.get_all_skills()
     this.get_skills_of_user()
   },
@@ -77,7 +98,7 @@ export default {
       this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/all_skills`,{
         params: {
           employee_id: this.$route.query.id,
-    }})
+      }})
       .then(response => {
         this.all_skills.splice(0,this.all_skills.length)
         response.data.forEach((record) => {
@@ -87,6 +108,18 @@ export default {
       })
       .catch(error => alert(error))
     },
+    get_employee_information(){
+      this.user.loader = true;
+      this.axios.post(`${process.env.VUE_APP_EMPLOYEE_MANAGER_URL}/get_employee`, {
+        employee_id: this.$route.query.id,
+      })
+      .then(response => {
+        this.user = response.data
+      })
+      .catch(error => alert(error))
+      .finally(() => {this.user.loading = false})
+    },
+
     get_skills_of_user(){
       this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills_of_user`,{
         params: {
@@ -113,6 +146,7 @@ export default {
       })
       .then( () => {
         this.get_all_skills()
+        this.get_skills_of_user()
       })
       .catch(error => alert(error))
     },
@@ -123,9 +157,42 @@ export default {
       })
       .then( () => {
         this.get_all_skills()
+        this.get_skills_of_user()
       })
       .catch(error => alert(error))
+    }
+  },
+  computed: {
+    ordered_skills(){
+      return this.skills.slice().sort((a, b) => {return b.relationship.properties.profeciency - a.relationship.properties.profeciency});
     }
   }
 }
 </script>
+
+<style scoped>
+.skill, form{
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.skill > *, form > * {
+  margin: 5px;
+}
+
+.skill_name, .new_skill_input {
+  flex: 1 1 0;
+}
+
+.skill meter, form .profeciency_range {
+  flex: 1 1 0;
+}
+
+.skill button, form .create_button {
+  flex: 0 0 10%;
+}
+
+</style>
