@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skill-manager-front-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skill-manager-front-deployment
+  template:
+    metadata:
+      labels:
+        app: skill-manager-front-deployment
+    spec:
+
+      containers:
+      - name: skill-manager-front-container
+        image: 172.16.98.151:5000/skill-manager-front
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: skill-manager-front-service
+  name: skill-manager-front-service
+spec:
+  ports:
+  - port: 80
+    nodePort: 30102
+  selector:
+    app: skill-manager-front-deployment
+  type: LoadBalancer
