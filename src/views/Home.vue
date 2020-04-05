@@ -7,24 +7,14 @@
 
     <div class="skills_wrapper">
 
-      <div
+      <Skill
         class="skill"
-        v-for="skill in ordered_skills"
-        v-bind:key="skill.skill.identity.low">
-
-        <div class="skill_name">
-          {{skill.skill.properties.name}}
-        </div>
-
-        <meter
-          v-bind:value="skill.relationship.properties.profeciency"
-          min="0"
-          max="100"/>
-
-
-        <button type="button" v-on:click="delete_relationship_to_skill(skill.skill)">bye</button>
-
-      </div>
+        v-for="skill in skills"
+        v-bind:key="skill.skill.identity.low"
+        v-bind:skill="skill.skill"
+        v-bind:relationship="skill.relationship"
+        v-on:deleted="delete_relationship_to_skill(skill.skill)"
+        v-on:update="update_profeciency(skill)"/>
 
     </div>
 
@@ -60,12 +50,12 @@
 
 <script>
 // @ is an alias to /src
-//import HelloWorld from '@/components/HelloWorld.vue'
+import Skill from '@/components/Skill.vue'
 
 export default {
   name: 'Home',
   components: {
-
+    Skill,
   },
   data(){
     return {
@@ -124,9 +114,11 @@ export default {
       this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills_of_user`,{
         params: {
           employee_id: this.$route.query.id,
-    }})
+        }})
       .then(response => {
+        // delete all skills
         this.skills.splice(0,this.skills.length)
+
         response.data.forEach((record) => {
           let skill = record._fields[record._fieldLookup['skill']]
           let relationship = record._fields[record._fieldLookup['relationship']]
@@ -135,6 +127,9 @@ export default {
             relationship: relationship,
           })
         });
+
+        // ordering
+        this.skills.sort((a, b) => {return b.relationship.properties.profeciency - a.relationship.properties.profeciency});
 
       })
       .catch(error => alert(error))
@@ -150,6 +145,19 @@ export default {
       })
       .catch(error => alert(error))
     },
+
+    update_profeciency(skill){
+      this.axios.post(`${process.env.VUE_APP_SKILL_MANAGER_URL}/create_skill`, {
+        skill: skill.skill,
+        relationship: skill.relationship,
+      })
+      .then( () => {
+        this.get_all_skills()
+        this.get_skills_of_user()
+      })
+      .catch(error => alert(error))
+    },
+
     delete_relationship_to_skill(skill){
       this.axios.post(`${process.env.VUE_APP_SKILL_MANAGER_URL}/delete_relationship_to_skill`, {
         employee_id: this.$route.query.id,
@@ -163,9 +171,7 @@ export default {
     }
   },
   computed: {
-    ordered_skills(){
-      return this.skills.slice().sort((a, b) => {return b.relationship.properties.profeciency - a.relationship.properties.profeciency});
-    }
+
   }
 }
 </script>
