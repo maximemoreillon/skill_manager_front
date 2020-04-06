@@ -32,7 +32,7 @@
 
       <button
         type="button"
-        v-on:click="editing = false">
+        v-on:click="cancel_editing()">
         Cancel
       </button>
 
@@ -63,6 +63,10 @@ export default {
     update_profeciency(){
       this.editing = false;
       this.$emit('update')
+    },
+    cancel_editing(){
+      this.editing = false;
+      this.$emit('cancel')
     }
   }
 }

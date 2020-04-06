@@ -14,7 +14,8 @@
         v-bind:skill="skill.skill"
         v-bind:relationship="skill.relationship"
         v-on:deleted="delete_relationship_to_skill(skill.skill)"
-        v-on:update="update_profeciency(skill)"/>
+        v-on:update="update_profeciency(skill)"
+        v-on:cancel="get_skills_of_user()"/>
 
     </div>
 
