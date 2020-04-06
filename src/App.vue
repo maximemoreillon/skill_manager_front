@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <AppTemplate
-      applicationName="社員情報マネージャー"
+      applicationName="Skill manager"
       v-bind:navigation="navigation"/>
   </div>
 </template>
