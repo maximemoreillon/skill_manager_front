@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 
 
 router.beforeEach((to, from, next) => {
-  var jwt = Vue.$cookies.get("jwt_jtekt")
+  var jwt = Vue.$cookies.get("jwt")
   if(jwt) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
     next();
@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
   }
   else {
     delete axios.defaults.headers.common['Authorization']
-    window.location.href = process.env.VUE_APP_AUTHENTICATION_MANAGER_URL;
+    window.location.href = process.env.VUE_APP_AUTHENTICATION_MANAGER_FRONT_URL;
   }
 });
 
