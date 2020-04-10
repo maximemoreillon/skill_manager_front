@@ -101,8 +101,8 @@ export default {
     },
     get_employee_information(){
       this.user.loader = true;
-      this.axios.post(`${process.env.VUE_APP_EMPLOYEE_MANAGER_URL}/employee`, {
-        employee_id: this.$route.query.id,
+      this.axios.get(`${process.env.VUE_APP_EMPLOYEE_MANAGER_URL}/employee`, {
+        prams: {employee_id: this.$route.query.id,}
       })
       .then(response => {
         this.user = response.data
