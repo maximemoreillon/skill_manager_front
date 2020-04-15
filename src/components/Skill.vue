@@ -6,7 +6,7 @@
     </div>
 
     <template v-if="!editing">
-      <meter
+      <progress
         v-bind:value="relationship.properties.profeciency"
         min="0"
         max="100"/>
@@ -90,7 +90,7 @@ export default {
   flex: 1 1 0;
 }
 
-.skill meter {
+.skill progress {
   flex: 1 1 0;
 }
 
