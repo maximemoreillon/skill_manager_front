@@ -17,4 +17,6 @@ deployment:
     - kubectl apply -f deployment.yml
     - kubectl rollout restart deployment/${APPLICATION_NAME}-deployment
   environment:
-    name: staging
+    name: production
+    kubernetes:
+      namespace: ${KUBERNETES_NAMESPACE}
