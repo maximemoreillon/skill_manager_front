@@ -1,51 +1,63 @@
 <template>
   <div class="home">
 
-    <div class="" v-if="user.properties">
-      Showing skills of {{user.properties.name_kanji}}
-    </div>
+    <h1 v-if="user.properties">Skills of {{user.properties.display_name}}</h1>
+    <h1 v-else>Skills</h1>
+
+    <template v-if="user_is_current_user">
+      <h2>新しいスキル</h2>
+
+      <form class="new_skill_form" v-on:submit.prevent="create_skill()">
+        <input
+          class="new_skill_input"
+          type="search"
+          list="skills"
+          v-model="new_skill.name"
+          placeholder="新しいスキル / New skill">
+
+        <input
+          type="range"
+          class="profeciency_range"
+          v-model="new_skill.profeciency">
+
+        <!-- make this a number maybe -->
+
+        <input
+          class="create_button"
+          type="submit">
+
+        <datalist id="skills">
+          <option
+            v-for="skill in all_skills"
+            v-bind:value="skill.properties.name"
+            v-bind:key="skill.properties.name"/>
+        </datalist>
+
+      </form>
+  </template>
+
+
 
     <div class="skills_wrapper">
 
-      <Skill
-        class="skill"
-        v-for="skill in skills"
-        v-bind:key="skill.skill.identity.low"
-        v-bind:skill="skill.skill"
-        v-bind:relationship="skill.relationship"
-        v-on:deleted="delete_relationship_to_skill(skill.skill)"
-        v-on:update="update_profeciency(skill)"
-        v-on:cancel="get_skills_of_user()"/>
+      <h2>あるスキル</h2>
+      <transition-group name="flip-list" tag="div">
+
+        <Skill
+          class="skill"
+          v-bind:editable="user_is_current_user"
+          v-for="skill in sorted_skills"
+          v-bind:key="skill.skill.identity.low"
+          v-bind:skill="skill.skill"
+          v-bind:relationship="skill.relationship"
+          v-on:deleted="delete_relationship_to_skill(skill.skill)"
+          v-on:update="update_profeciency(skill)"
+          v-on:cancel="get_skills_of_user()"/>
+      </transition-group>
 
     </div>
 
-    <form class="new_skill_form" v-on:submit.prevent="create_skill()">
-      <input
-        class="new_skill_input"
-        type="search"
-        list="skills"
-        v-model="new_skill.properties.name"
-        placeholder="skill">
 
-      <input
-        type="range"
-        class="profeciency_range"
-        v-model="new_skill_relationship.properties.profeciency">
-
-      <!-- make this a number maybe -->
-
-      <input
-        class="create_button"
-        type="submit">
-
-      <datalist id="skills">
-        <option
-          v-for="skill in all_skills"
-          v-bind:value="skill.properties.name"
-          v-bind:key="skill.properties.name"/>
-      </datalist>
-
-    </form>
   </div>
 </template>
 
@@ -68,15 +80,10 @@ export default {
       skills: [],
 
       new_skill: {
-        properties: {
-          name: ''
-        }
-      },
-      new_skill_relationship: {
-        properties: {
-          profeciency: 0
-        }
+        name: '',
+        profeciency: 50,
       }
+
     }
   },
   mounted(){
@@ -86,7 +93,7 @@ export default {
   },
   methods: {
     get_all_skills(){
-      this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/all_skills`,{
+      this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills`,{
         params: {
           employee_id: this.$route.query.id,
       }})
@@ -101,21 +108,21 @@ export default {
     },
     get_employee_information(){
       this.user.loader = true;
-      this.axios.get(`${process.env.VUE_APP_EMPLOYEE_MANAGER_URL}/employee`, {
-        prams: {employee_id: this.$route.query.id,}
-      })
+      let user_id = this.$route.query.id || 'self'
+      this.axios.get(`${process.env.VUE_APP_EMPLOYEE_MANAGER_URL}/employees/${user_id}`)
       .then(response => {
-        this.user = response.data
+        let record = response.data[0]
+        this.user = record._fields[record._fieldLookup['employee']]
       })
       .catch(error => alert(error))
       .finally(() => {this.user.loading = false})
     },
 
     get_skills_of_user(){
-      this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills_of_user`,{
-        params: {
-          employee_id: this.$route.query.id,
-        }})
+      let user_id = this.$route.query.id || 'self'
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills`
+
+      this.axios.get(url)
       .then(response => {
         // delete all skills
         this.skills.splice(0,this.skills.length)
@@ -130,49 +137,67 @@ export default {
         });
 
         // ordering
-        this.skills.sort((a, b) => {return b.relationship.properties.profeciency - a.relationship.properties.profeciency});
+        this.skills.sort((a, b) => {
+          return b.relationship.properties.profeciency - a.relationship.properties.profeciency
+        })
 
       })
       .catch(error => alert(error))
     },
     create_skill(){
-      this.axios.post(`${process.env.VUE_APP_SKILL_MANAGER_URL}/create_skill`, {
-        skill: this.new_skill,
-        relationship: this.new_skill_relationship,
+      let user_id = this.$route.query.id || 'self'
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills/${this.new_skill.name}`
+
+      this.axios.post(url, {
+        profeciency: this.new_skill.profeciency,
       })
       .then( () => {
         this.get_all_skills()
         this.get_skills_of_user()
       })
-      .catch(error => alert(error))
+      .catch(error => {
+        if(error.response) console.log(error.response.data)
+        alert(error)
+      })
     },
 
     update_profeciency(skill){
-      this.axios.post(`${process.env.VUE_APP_SKILL_MANAGER_URL}/create_skill`, {
-        skill: skill.skill,
-        relationship: skill.relationship,
+      let user_id = this.$route.query.id || 'self'
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills/${skill.skill.properties.name}`
+
+      this.axios.post(url, {
+        profeciency: skill.relationship.properties.profeciency,
       })
       .then( () => {
-        this.get_all_skills()
-        this.get_skills_of_user()
+        //this.get_skills_of_user()
       })
       .catch(error => alert(error))
     },
 
     delete_relationship_to_skill(skill){
-      this.axios.post(`${process.env.VUE_APP_SKILL_MANAGER_URL}/delete_relationship_to_skill`, {
-        employee_id: this.$route.query.id,
-        skill_id: skill.identity.low,
-      })
+      let user_id = this.$route.query.id || 'self'
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills/${skill.identity.low}`
+
+      this.axios.delete(url)
       .then( () => {
         this.get_all_skills()
         this.get_skills_of_user()
       })
-      .catch(error => alert(error))
+      .catch(error =>{
+        if(error.response) console.log(error.response.data)
+         alert(error)
+       })
     }
   },
   computed: {
-
+    user_is_current_user(){
+      return !this.$route.query.id
+    },
+    sorted_skills(){
+      return this.skills.slice().sort((a, b) => {
+        return b.relationship.properties.profeciency - a.relationship.properties.profeciency
+      });
+    }
   }
 }
 </script>

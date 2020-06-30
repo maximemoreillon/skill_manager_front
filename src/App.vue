@@ -24,5 +24,7 @@ export default {
 </script>
 
 <style>
-
+.flip-list-move {
+  transition: transform 1s;
+}
 </style>

@@ -5,44 +5,29 @@
       {{skill.properties.name}}
     </div>
 
-    <template v-if="!editing">
+    <template v-if="!editable">
       <progress
         v-bind:value="relationship.properties.profeciency"
         min="0"
         max="100"/>
-
-      <button
-        type="button"
-        v-on:click="editing = true">
-        Edit
-      </button>
     </template>
 
     <template v-else>
       <input
         type="range"
         class="profeciency_range"
-        v-model="relationship.properties.profeciency">
+        v-model="profeciency_temp"
+        v-on:change="update_profeciency()">
 
       <button
         type="button"
-        v-on:click="update_profeciency()">
-        Save
-      </button>
-
-      <button
-        type="button"
-        v-on:click="cancel_editing()">
-        Cancel
+        v-on:click="$emit('deleted')">
+        Delete
       </button>
 
     </template>
 
-    <button
-      type="button"
-      v-on:click="$emit('deleted')">
-      bye
-    </button>
+
 
   </div>
 </template>
@@ -53,15 +38,16 @@ export default {
   props: {
     skill: Object,
     relationship: Object,
+    editable: Boolean,
   },
   data(){
     return {
-      editing: false,
+      profeciency_temp: this.relationship.properties.profeciency
     }
   },
   methods: {
     update_profeciency(){
-      this.editing = false;
+      this.relationship.properties.profeciency = this.profeciency_temp
       this.$emit('update')
     },
     cancel_editing(){
@@ -82,6 +68,10 @@ export default {
   margin: 5px;
 }
 
+.skill:hover {
+  background-color: #eeeeee;
+}
+
 .skill > * {
   margin: 5px;
 }
@@ -90,7 +80,7 @@ export default {
   flex: 1 1 0;
 }
 
-.skill progress {
+progress, input[type="range"] {
   flex: 1 1 0;
 }
 
