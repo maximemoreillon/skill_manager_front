@@ -1,9 +1,12 @@
 <template>
   <div class="skill">
 
-    <div class="skill_name">
+    <router-link
+    class="skill_name"
+      :to="{ name: 'skill', query: {name: skill.properties.name} }">
       {{skill.properties.name}}
-    </div>
+    </router-link>
+
 
     <template v-if="!editable">
       <progress
@@ -78,6 +81,8 @@ export default {
 
 .skill_name {
   flex: 1 1 0;
+  color: currentColor;
+  text-decoration: none;
 }
 
 progress, input[type="range"] {
