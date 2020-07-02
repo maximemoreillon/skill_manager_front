@@ -91,6 +91,18 @@ export default {
     this.get_all_skills()
     this.get_skills_of_user()
   },
+  beforeRouteUpdate (to, _, next) {
+
+    // not sure why this is needed here
+    this.skills.splice(0,this.skills.length)
+
+    next()
+    this.$nextTick().then(() => {
+      this.get_employee_information()
+      this.get_all_skills()
+      this.get_skills_of_user()
+    })
+  },
   methods: {
     get_all_skills(){
       this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills`)
