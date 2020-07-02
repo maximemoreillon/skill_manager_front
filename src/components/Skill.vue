@@ -46,7 +46,7 @@ export default {
   },
   data(){
     return {
-      profeciency_temp: this.relationship.properties.profeciency
+      profeciency_temp: (this.relationship ? this.relationship.properties.profeciency : null)
     }
   },
   methods: {
