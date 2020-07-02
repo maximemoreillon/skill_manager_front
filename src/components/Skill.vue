@@ -3,31 +3,32 @@
 
     <router-link
     class="skill_name"
-      :to="{ name: 'skill', query: {name: skill.properties.name} }">
+      :to="{ name: 'skill', query: {id: skill.identity.low} }">
       {{skill.properties.name}}
     </router-link>
 
+    <template v-if="relationship">
+      <template v-if="!editable">
+        <progress
+          v-bind:value="relationship.properties.profeciency"
+          min="0"
+          max="100"/>
+      </template>
 
-    <template v-if="!editable">
-      <progress
-        v-bind:value="relationship.properties.profeciency"
-        min="0"
-        max="100"/>
-    </template>
+      <template v-else>
+        <input
+          type="range"
+          class="profeciency_range"
+          v-model="profeciency_temp"
+          v-on:change="update_profeciency()">
 
-    <template v-else>
-      <input
-        type="range"
-        class="profeciency_range"
-        v-model="profeciency_temp"
-        v-on:change="update_profeciency()">
+        <button
+          type="button"
+          v-on:click="$emit('deleted')">
+          Delete
+        </button>
 
-      <button
-        type="button"
-        v-on:click="$emit('deleted')">
-        Delete
-      </button>
-
+      </template>
     </template>
 
 

@@ -38,8 +38,8 @@ export default {
   },
   methods: {
     get_skill(){
-      if(this.$route.query.name){
-        let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/skills/${this.$route.query.name}/employees`
+      if(this.$route.query.id){
+        let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/skills/${this.$route.query.id}/employees`
 
         this.axios.get(url)
         .then( (response) => {

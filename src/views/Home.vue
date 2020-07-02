@@ -93,10 +93,7 @@ export default {
   },
   methods: {
     get_all_skills(){
-      this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills`,{
-        params: {
-          employee_id: this.$route.query.id,
-      }})
+      this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills`)
       .then(response => {
         this.all_skills.splice(0,this.all_skills.length)
         response.data.forEach((record) => {
@@ -146,9 +143,10 @@ export default {
     },
     create_skill(){
       let user_id = this.$route.query.id || 'self'
-      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills/${this.new_skill.name}`
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills`
 
       this.axios.post(url, {
+        skill_name: this.new_skill.name,
         profeciency: this.new_skill.profeciency,
       })
       .then( () => {
@@ -163,9 +161,10 @@ export default {
 
     update_profeciency(skill){
       let user_id = this.$route.query.id || 'self'
-      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills/${skill.skill.properties.name}`
+      let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills`
 
       this.axios.post(url, {
+        skill_name: skill.skill.properties.name,
         profeciency: skill.relationship.properties.profeciency,
       })
       .then( () => {
