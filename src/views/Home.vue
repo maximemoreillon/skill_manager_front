@@ -167,8 +167,8 @@ export default {
         this.get_skills_of_user()
 
         // Reset inputs
-        this.this.new_skill.name = ''
-        this.this.profeciency.name = 50
+        this.new_skill.name = ''
+        this.new_skill.profeciency = 50
 
       })
       .catch(error => {
