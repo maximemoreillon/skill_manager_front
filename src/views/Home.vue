@@ -97,7 +97,7 @@ export default {
     this.skills.splice(0,this.skills.length)
 
     next()
-    
+
     this.$nextTick().then(() => {
       this.get_employee_information()
       this.get_all_skills()
@@ -165,6 +165,11 @@ export default {
       .then( () => {
         this.get_all_skills()
         this.get_skills_of_user()
+
+        // Reset inputs
+        this.this.new_skill.name = ''
+        this.this.profeciency.name = 50
+
       })
       .catch(error => {
         if(error.response) console.log(error.response.data)
