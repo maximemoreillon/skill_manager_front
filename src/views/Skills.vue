@@ -6,7 +6,7 @@
     <div class="skills_wrapper">
       <Skill
         class="skill"
-        v-for="skill in skills"
+        v-for="skill in sorted_skills"
         v-bind:key="skill.identity.low"
         v-bind:skill="skill"/>
     </div>
@@ -39,6 +39,8 @@ export default {
         this.skills.splice(0,this.skills.length)
         response.data.forEach((record) => {
           let skill = record._fields[record._fieldLookup['skill']]
+          let employee_count = record._fields[record._fieldLookup['employee_count']]
+          skill.employee_count = employee_count
           this.skills.push(skill)
         });
       })
@@ -49,7 +51,7 @@ export default {
   computed: {
     sorted_skills(){
       return this.skills.slice().sort((a, b) => {
-        return b.relationship.properties.profeciency - a.relationship.properties.profeciency
+        return b.employee_count.low - a.employee_count.low
       });
     }
   }

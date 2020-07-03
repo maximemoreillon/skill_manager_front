@@ -97,6 +97,7 @@ export default {
     this.skills.splice(0,this.skills.length)
 
     next()
+    
     this.$nextTick().then(() => {
       this.get_employee_information()
       this.get_all_skills()

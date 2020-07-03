@@ -31,14 +31,24 @@
       </template>
     </template>
 
+    <template v-if="skill.employee_count">
+      <account-icon />
+      <span>{{skill.employee_count.low}}</span>
+    </template>
+
 
 
   </div>
 </template>
 
 <script>
+import AccountIcon from 'vue-material-design-icons/Account.vue';
+
 export default {
   name: 'Skill',
+  components: {
+    AccountIcon
+  },
   props: {
     skill: Object,
     relationship: Object,
