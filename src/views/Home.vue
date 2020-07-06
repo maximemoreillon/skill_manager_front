@@ -1,7 +1,13 @@
 <template>
   <div class="home">
 
-    <h1 v-if="user.properties">Skills of {{user.properties.display_name}}</h1>
+    <template v-if="user.properties">
+      <h1>Skills of {{user.properties.display_name}}</h1>
+      <p>
+        <a :href="`${employee_manager_front_url}/?id=${user.identity.low}`">{{user.properties.display_name}}'s profile</a>
+      </p>
+
+    </template>
     <h1 v-else>Skills</h1>
 
     <template v-if="user_is_current_user">
@@ -82,7 +88,11 @@ export default {
       new_skill: {
         name: '',
         profeciency: 50,
-      }
+      },
+
+      employee_manager_front_url: process.env.VUE_APP_EMPLOYEE_MANAGER_FRONT_URL
+
+
 
     }
   },
@@ -220,6 +230,11 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #c00000;
+}
 .skill, form{
   border: 1px solid #dddddd;
   border-radius: 5px;
