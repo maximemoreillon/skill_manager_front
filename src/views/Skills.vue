@@ -2,8 +2,9 @@
   <div class="home">
 
     <h1>Skills</h1>
+    <Loader v-if="loading" >Loading skills</Loader>
 
-    <div class="skills_wrapper">
+    <div class="skills_wrapper" v-if="!loading">
       <Skill
         class="skill"
         v-for="skill in sorted_skills"
@@ -18,15 +19,18 @@
 <script>
 // @ is an alias to /src
 import Skill from '@/components/Skill.vue'
+import Loader from '@moreillon/vue_loader'
 
 export default {
   name: 'Skills',
   components: {
     Skill,
+    Loader,
   },
   data(){
     return {
       skills: [],
+      loading: false,
     }
   },
   mounted(){
@@ -34,6 +38,7 @@ export default {
   },
   methods: {
     get_all_skills(){
+      this.loading = true
       this.axios.get(`${process.env.VUE_APP_SKILL_MANAGER_URL}/skills`)
       .then(response => {
         this.skills.splice(0,this.skills.length)
@@ -45,6 +50,7 @@ export default {
         });
       })
       .catch(error => alert(error))
+      .finally(() => this.loading = false)
     },
 
   },

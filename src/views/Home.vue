@@ -26,9 +26,8 @@
           class="profeciency_range"
           v-model="new_skill.profeciency">
 
-        <!-- make this a number maybe -->
-
         <input
+          :disabled="new_skill.name"
           class="create_button"
           type="submit">
 
@@ -40,26 +39,29 @@
         </datalist>
 
       </form>
-  </template>
-
+    </template>
 
 
     <div class="skills_wrapper">
 
       <h2>あるスキル</h2>
-      <transition-group name="flip-list" tag="div">
 
-        <Skill
-          class="skill"
-          v-bind:editable="user_is_current_user"
-          v-for="skill in sorted_skills"
-          v-bind:key="skill.skill.identity.low"
-          v-bind:skill="skill.skill"
-          v-bind:relationship="skill.relationship"
-          v-on:deleted="delete_relationship_to_skill(skill.skill)"
-          v-on:update="update_profeciency(skill)"
-          v-on:cancel="get_skills_of_user()"/>
-      </transition-group>
+      <Loader v-if="loading" >Loading skills</Loader>
+      <template v-if="!loading">
+        <transition-group name="flip-list" tag="div">
+
+          <Skill
+            class="skill"
+            v-bind:editable="user_is_current_user"
+            v-for="skill in sorted_skills"
+            v-bind:key="skill.skill.identity.low"
+            v-bind:skill="skill.skill"
+            v-bind:relationship="skill.relationship"
+            v-on:deleted="delete_relationship_to_skill(skill.skill)"
+            v-on:update="update_profeciency(skill)"
+            v-on:cancel="get_skills_of_user()"/>
+        </transition-group>
+      </template>
 
     </div>
 
@@ -70,11 +72,13 @@
 <script>
 // @ is an alias to /src
 import Skill from '@/components/Skill.vue'
+import Loader from '@moreillon/vue_loader'
 
 export default {
   name: 'Home',
   components: {
     Skill,
+    Loader,
   },
   data(){
     return {
@@ -84,6 +88,7 @@ export default {
       all_skills: [],
 
       skills: [],
+      loading: false,
 
       new_skill: {
         name: '',
@@ -142,6 +147,8 @@ export default {
       let user_id = this.$route.query.id || 'self'
       let url = `${process.env.VUE_APP_SKILL_MANAGER_URL}/employees/${user_id}/skills`
 
+      this.loading = true;
+
       this.axios.get(url)
       .then(response => {
         // delete all skills
@@ -163,6 +170,7 @@ export default {
 
       })
       .catch(error => alert(error))
+      .finally(() => this.loading = false)
     },
     create_skill(){
       let user_id = this.$route.query.id || 'self'

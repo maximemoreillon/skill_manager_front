@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@moreillon/vue_application_template_flex": "^0.1.0",
-    "@moreillon/vue_loader": "^0.1.0",
+    "@moreillon/vue_loader": "^0.1.1",
     "axios": "^0.19.2",
     "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.6.4",
