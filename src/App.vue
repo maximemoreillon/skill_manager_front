@@ -16,7 +16,7 @@ export default {
   data(){
     return{
       navigation : [
-        {route: '/', label: 'User', icon: 'account-details'},
+        {route: '/', label: 'My skills', icon: 'account-details'},
         {route: '/skills', label: 'Skills', icon: 'account-details'},
       ]
     }
