@@ -27,7 +27,7 @@
           v-model="new_skill.profeciency">
 
         <input
-          :disabled="new_skill.name"
+          :disabled="new_skill.name === ''"
           class="create_button"
           type="submit">
 
