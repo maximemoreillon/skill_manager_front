@@ -47,6 +47,8 @@ export default {
       skill: null,
       users_with_this_skill: [],
       loading: false,
+
+
     }
   },
   mounted(){
@@ -89,7 +91,8 @@ export default {
       return this.users_with_this_skill.slice().sort((a, b) => {
         return b.relationship.properties.profeciency - a.relationship.properties.profeciency
       });
-    }
+    },
+
   }
 
 }

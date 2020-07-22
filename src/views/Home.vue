@@ -11,7 +11,7 @@
     <h1 v-else>Skills</h1>
 
     <template v-if="user_is_current_user">
-      <h2>新しいスキル</h2>
+      <h2>新しいスキル / New skill</h2>
 
       <form class="new_skill_form" v-on:submit.prevent="create_skill()">
         <input
@@ -21,10 +21,17 @@
           v-model="new_skill.name"
           placeholder="新しいスキル / New skill">
 
-        <input
-          type="range"
-          class="profeciency_range"
-          v-model="new_skill.profeciency">
+        <div class="new_skill_level_wrapper">
+          <span class="profeciency">
+            レベル：{{level_label}}
+          </span>
+          <input
+            type="range"
+            class="profeciency_range"
+            v-model="new_skill.profeciency">
+        </div>
+
+
 
         <input
           :disabled="new_skill.name === ''"
@@ -95,7 +102,27 @@ export default {
         profeciency: 50,
       },
 
-      employee_manager_front_url: process.env.VUE_APP_EMPLOYEE_MANAGER_FRONT_URL
+      employee_manager_front_url: process.env.VUE_APP_EMPLOYEE_MANAGER_FRONT_URL,
+
+      level_labels: [
+        {
+          min: 0, max: 25,
+          label: 'サポートされたらできる',
+        },
+        {
+          min: 25, max: 50,
+          label: '自分でできる',
+        },
+        {
+          min: 50, max: 75,
+          label: '他の人に教えれる',
+        },
+        {
+          min: 75, max: 100,
+          label: '大学で教えれる',
+        },
+
+      ]
 
 
 
@@ -232,6 +259,13 @@ export default {
       return this.skills.slice().sort((a, b) => {
         return b.relationship.properties.profeciency - a.relationship.properties.profeciency
       });
+    },
+    level_label(){
+      return this.level_labels.find(item => {
+        return this.new_skill.profeciency >= item.min && this.new_skill.profeciency < item.max
+      }).label
+
+
     }
   }
 }
@@ -251,8 +285,19 @@ a {
   margin: 5px;
 }
 
+.new_skill_level_wrapper {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .skill > *, form > * {
   margin: 5px;
+}
+
+.profeciency {
+  text-align: center;
 }
 
 .skill_name, .new_skill_input {
