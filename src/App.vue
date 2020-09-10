@@ -1,8 +1,18 @@
 <template>
   <div id="app">
     <AppTemplate
-      applicationName="Skill manager"
-      v-bind:navigation="navigation"/>
+      authenticate
+      applicationName="Skill manager">
+
+      <template v-slot:navigation>
+        <router-link :to="{ name: 'home'}">My skills</router-link>
+        <router-link :to="{ name: 'skills'}">Skill list</router-link>
+        <router-link :to="{ name: 'about'}">About</router-link>
+      </template>
+
+    </AppTemplate>
+
+
   </div>
 </template>
 <script>

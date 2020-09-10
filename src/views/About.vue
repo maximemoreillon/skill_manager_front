@@ -2,8 +2,9 @@
   <div class="about">
     <h1>Skill manager</h1>
     <p>An application to get insight about the skills of users</p>
-    <h2>Bug report</h2>
-    <p>Bugs can be reported on GitLab</p>
+    <p>
+      Developped and maintained by <a href="https://maximemoreillon.com">Maxime MOREILLON</a>
+    </p>
     <h2>Technology stack</h2>
     <ul>
       <li>Neo4J</li>

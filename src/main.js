@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
   }
   else {
     delete axios.defaults.headers.common['Authorization']
-    window.location.href = process.env.VUE_APP_AUTHENTICATION_MANAGER_FRONT_URL;
+    //window.location.href = process.env.VUE_APP_AUTHENTICATION_MANAGER_FRONT_URL;
   }
 })
 
