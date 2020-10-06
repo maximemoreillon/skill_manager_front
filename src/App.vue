@@ -23,14 +23,6 @@ export default {
   components: {
     AppTemplate
   },
-  data(){
-    return{
-      navigation : [
-        {route: '/', label: 'My skills', icon: 'account-details'},
-        {route: '/skills', label: 'Skills', icon: 'account-details'},
-      ]
-    }
-  }
 }
 </script>
 

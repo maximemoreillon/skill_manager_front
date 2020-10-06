@@ -14,6 +14,7 @@
       <h2>新しいスキル / New skill</h2>
 
       <form class="new_skill_form" v-on:submit.prevent="create_skill()">
+        <label>スキル/Skill:</label>
         <input
           class="new_skill_input"
           type="search"
@@ -21,15 +22,11 @@
           v-model="new_skill.name"
           placeholder="新しいスキル / New skill">
 
-        <div class="new_skill_level_wrapper">
-          <span class="profeciency">
-            レベル：{{level_label}}
-          </span>
-          <input
-            type="range"
-            class="profeciency_range"
-            v-model="new_skill.profeciency">
-        </div>
+        <label>レベル/Level:</label>
+        <input
+          type="range"
+          class="profeciency_range"
+          v-model="new_skill.profeciency">
 
 
 
