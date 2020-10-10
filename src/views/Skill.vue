@@ -17,7 +17,7 @@
 
         <router-link
           class="employee_name"
-          :to="{ name: 'Home', query: {id: user.employee.identity.low} }">
+          :to="{ name: 'home', query: {id: user.employee.identity.low} }">
           {{user.employee.properties.display_name}}
         </router-link>
 
